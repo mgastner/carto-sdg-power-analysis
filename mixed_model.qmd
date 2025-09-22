@@ -1,6 +1,8 @@
 ---
 title: "ERFP Proposal: Power for Stylus vs. Keyboard (AB/BA)"
-format: html
+format:
+  html:
+    embed-resources: true
 knitr:
   opts_chunk:
     message: false
