@@ -1,8 +1,6 @@
 ---
 title: "ERFP Proposal: Power for Stylus vs. Keyboard (AB/BA)"
-format:
-  html:
-    embed-resources: true
+format: html
 knitr:
   opts_chunk:
     message: false
@@ -112,11 +110,11 @@ simulate_once <- function(
       student_re = rnorm(n_students, 0, sd_student)
     )
   items <-
-    tibble(
+    tibble::tibble(
       task = rep(c("retention", "analyze"), each = items_per_cell),
       item_id = c(
-        str_c("ret_", seq_len(items_per_cell)),
-        str_c("ana_", seq_len(items_per_cell))
+        stringr::str_c("ret_", seq_len(items_per_cell)),
+        stringr::str_c("ana_", seq_len(items_per_cell))
       ),
       item_re = rnorm(2 * items_per_cell, 0, sd_item)
     )
@@ -126,12 +124,12 @@ simulate_once <- function(
     expand_grid(
       select(
         students,
-        .data$student_id,
+        "student_id",
         sequence,
-        .data$moderator_z,
-        .data$student_re
+        "moderator_z",
+        "student_re"
       ),
-      select(items, .data$item_id, .data$task, .data$item_re),
+      select(items, "item_id", "task", "item_re"),
       method = c("keyboard", "stylus")
     ) |>
     mutate(
