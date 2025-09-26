@@ -38,7 +38,7 @@ The model incorporates the following **fixed effects**:
 * $\text{Method} \in \{\text{keyboard}, \text{stylus}\}$: Primary effect of interest.
 * $\text{Period} \in \{1, 2\}$: Practice/carryover control in the experiment's AB/BA crossover design.
 * $\text{Sequence} \in \{\text{AB}, \text{BA}\}$: Crossover order.
-* $\text{TaskType} \in \{\text{retention}, \text{analysis}\}$. We include task type as a fixed effect because, a priori, retention tasks are expected to be easier than analysis tasks.
+* $\text{TaskType} \in \{\text{retention}, \text{evaluation}\}$. We include task type as a fixed effect because, a priori, retention tasks are expected to be easier than evaluation tasks.
 * $R$: Individual stylus readiness, a student-level moderator reflecting readiness to use a stylus rather than a keyboard; standardized as a z-score.
 
 As **random effects**, the model includes intercepts for these variables:
@@ -84,7 +84,7 @@ simulate_once <- function(
     items_per_cell = 6, # per combinations of method and task type
     p0_keyboard_ret = 0.65, # baseline accuracy (keyboard + retention)
     odds_ratio_method = 1.35, # stylus vs keyboard (average treatment effect)
-    odds_ratio_task_ana_vs_ret = 0.80, # Analysis harder if < 1
+    odds_ratio_task_eval_vs_ret = 0.80, # Evaluation harder if < 1
     odds_ratio_method_x_task = 1.00, # interaction of method and task
     beta_period = 0.00, # carryover/practice (Period 2 vs 1)
     beta_sequence = 0.00, # AB vs BA
@@ -96,7 +96,7 @@ simulate_once <- function(
   # Fixed effects (log-odds)
   b0 <- qlogis(p0_keyboard_ret)
   b_method <- log(odds_ratio_method)
-  b_task <- log(odds_ratio_task_ana_vs_ret)
+  b_task <- log(odds_ratio_task_eval_vs_ret)
   b_mxt <- log(odds_ratio_method_x_task)
 
   # Students and items
@@ -111,10 +111,10 @@ simulate_once <- function(
     )
   items <-
     tibble::tibble(
-      task = rep(c("retention", "analyze"), each = items_per_cell),
+      task = rep(c("retention", "evaluation"), each = items_per_cell),
       item_id = c(
         stringr::str_c("ret_", seq_len(items_per_cell)),
-        stringr::str_c("ana_", seq_len(items_per_cell))
+        stringr::str_c("eval_", seq_len(items_per_cell))
       ),
       item_re = rnorm(2 * items_per_cell, 0, sd_item)
     )
@@ -134,7 +134,7 @@ simulate_once <- function(
     ) |>
     mutate(
       method = factor(.data$method, levels = c("keyboard", "stylus")),
-      task = factor(.data$task, levels = c("retention", "analyze")),
+      task = factor(.data$task, levels = c("retention", "evaluation")),
       sequence = factor(sequence, levels = c("AB", "BA")),
       period = factor(
         case_when(
@@ -147,8 +147,8 @@ simulate_once <- function(
       ), # Period 1 as reference
       lp = b0 +
         if_else(.data$method == "stylus", b_method, 0) +
-        if_else(.data$task == "analyze", b_task, 0) +
-        if_else(.data$method == "stylus" & .data$task == "analyze", b_mxt, 0) +
+        if_else(.data$task == "evaluation", b_task, 0) +
+        if_else(.data$method == "stylus" & .data$task == "evaluation", b_mxt, 0) +
         if_else(period == "2", beta_period, 0) +
         if_else(sequence == "BA", beta_sequence, 0) +
         if_else(
@@ -194,7 +194,7 @@ simulate_once <- function(
   }
   tibble(
     p_method = get_p(fits$primary, "methodstylus"),
-    p_m_x_t = get_p(fits$mxt, "methodstylus:taskanalyze"),
+    p_m_x_t = get_p(fits$mxt, "methodstylus:taskevaluation"),
     p_m_x_m = get_p(fits$mxm, "methodstylus:moderator_z"),
     sing_primary = if_else(
       !is.null(fits$primary),

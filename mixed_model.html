@@ -150,7 +150,7 @@ window.Quarto = {
 <li><span class="math inline">\(\text{Method} \in \{\text{keyboard}, \text{stylus}\}\)</span>: Primary effect of interest.</li>
 <li><span class="math inline">\(\text{Period} \in \{1, 2\}\)</span>: Practice/carryover control in the experiment’s AB/BA crossover design.</li>
 <li><span class="math inline">\(\text{Sequence} \in \{\text{AB}, \text{BA}\}\)</span>: Crossover order.</li>
-<li><span class="math inline">\(\text{TaskType} \in \{\text{retention}, \text{analysis}\}\)</span>. We include task type as a fixed effect because, a priori, retention tasks are expected to be easier than analysis tasks.</li>
+<li><span class="math inline">\(\text{TaskType} \in \{\text{retention}, \text{evaluation}\}\)</span>. We include task type as a fixed effect because, a priori, retention tasks are expected to be easier than evaluation tasks.</li>
 <li><span class="math inline">\(R\)</span>: Individual stylus readiness, a student-level moderator reflecting readiness to use a stylus rather than a keyboard; standardized as a z-score.</li>
 </ul>
 <p>As <strong>random effects</strong>, the model includes intercepts for these variables:</p>
@@ -189,7 +189,7 @@ window.Quarto = {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">items_per_cell =</span> <span class="dv">6</span>, <span class="co"># per combinations of method and task type</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">p0_keyboard_ret =</span> <span class="fl">0.65</span>, <span class="co"># baseline accuracy (keyboard + retention)</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">odds_ratio_method =</span> <span class="fl">1.35</span>, <span class="co"># stylus vs keyboard (average treatment effect)</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">odds_ratio_task_ana_vs_ret =</span> <span class="fl">0.80</span>, <span class="co"># Analysis harder if &lt; 1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">odds_ratio_task_eval_vs_ret =</span> <span class="fl">0.80</span>, <span class="co"># Evaluation harder if &lt; 1</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">odds_ratio_method_x_task =</span> <span class="fl">1.00</span>, <span class="co"># interaction of method and task</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_period =</span> <span class="fl">0.00</span>, <span class="co"># carryover/practice (Period 2 vs 1)</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_sequence =</span> <span class="fl">0.00</span>, <span class="co"># AB vs BA</span></span>
@@ -201,7 +201,7 @@ window.Quarto = {
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fixed effects (log-odds)</span></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  b0 <span class="ot">&lt;-</span> <span class="fu">qlogis</span>(p0_keyboard_ret)</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  b_method <span class="ot">&lt;-</span> <span class="fu">log</span>(odds_ratio_method)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  b_task <span class="ot">&lt;-</span> <span class="fu">log</span>(odds_ratio_task_ana_vs_ret)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  b_task <span class="ot">&lt;-</span> <span class="fu">log</span>(odds_ratio_task_eval_vs_ret)</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  b_mxt <span class="ot">&lt;-</span> <span class="fu">log</span>(odds_ratio_method_x_task)</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Students and items</span></span>
@@ -216,10 +216,10 @@ window.Quarto = {
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span></span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"retention"</span>, <span class="st">"analyze"</span>), <span class="at">each =</span> items_per_cell),</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"retention"</span>, <span class="st">"evaluation"</span>), <span class="at">each =</span> items_per_cell),</span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">item_id =</span> <span class="fu">c</span>(</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_c</span>(<span class="st">"ret_"</span>, <span class="fu">seq_len</span>(items_per_cell)),</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_c</span>(<span class="st">"ana_"</span>, <span class="fu">seq_len</span>(items_per_cell))</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_c</span>(<span class="st">"eval_"</span>, <span class="fu">seq_len</span>(items_per_cell))</span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>      ),</span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">item_re =</span> <span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> items_per_cell, <span class="dv">0</span>, sd_item)</span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    )</span>
@@ -239,7 +239,7 @@ window.Quarto = {
 <span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
 <span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">method =</span> <span class="fu">factor</span>(.data<span class="sc">$</span>method, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"keyboard"</span>, <span class="st">"stylus"</span>)),</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">factor</span>(.data<span class="sc">$</span>task, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"retention"</span>, <span class="st">"analyze"</span>)),</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">factor</span>(.data<span class="sc">$</span>task, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"retention"</span>, <span class="st">"evaluation"</span>)),</span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">sequence =</span> <span class="fu">factor</span>(sequence, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"AB"</span>, <span class="st">"BA"</span>)),</span>
 <span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">period =</span> <span class="fu">factor</span>(</span>
 <span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        <span class="fu">case_when</span>(</span>
@@ -252,8 +252,8 @@ window.Quarto = {
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>      ), <span class="co"># Period 1 as reference</span></span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>      <span class="at">lp =</span> b0 <span class="sc">+</span></span>
 <span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(.data<span class="sc">$</span>method <span class="sc">==</span> <span class="st">"stylus"</span>, b_method, <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(.data<span class="sc">$</span>task <span class="sc">==</span> <span class="st">"analyze"</span>, b_task, <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(.data<span class="sc">$</span>method <span class="sc">==</span> <span class="st">"stylus"</span> <span class="sc">&amp;</span> .data<span class="sc">$</span>task <span class="sc">==</span> <span class="st">"analyze"</span>, b_mxt, <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(.data<span class="sc">$</span>task <span class="sc">==</span> <span class="st">"evaluation"</span>, b_task, <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(.data<span class="sc">$</span>method <span class="sc">==</span> <span class="st">"stylus"</span> <span class="sc">&amp;</span> .data<span class="sc">$</span>task <span class="sc">==</span> <span class="st">"evaluation"</span>, b_mxt, <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(period <span class="sc">==</span> <span class="st">"2"</span>, beta_period, <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(sequence <span class="sc">==</span> <span class="st">"BA"</span>, beta_sequence, <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(</span>
@@ -299,7 +299,7 @@ window.Quarto = {
 <span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
 <span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_method =</span> <span class="fu">get_p</span>(fits<span class="sc">$</span>primary, <span class="st">"methodstylus"</span>),</span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_m_x_t =</span> <span class="fu">get_p</span>(fits<span class="sc">$</span>mxt, <span class="st">"methodstylus:taskanalyze"</span>),</span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_m_x_t =</span> <span class="fu">get_p</span>(fits<span class="sc">$</span>mxt, <span class="st">"methodstylus:taskevaluation"</span>),</span>
 <span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_m_x_m =</span> <span class="fu">get_p</span>(fits<span class="sc">$</span>mxm, <span class="st">"methodstylus:moderator_z"</span>),</span>
 <span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">sing_primary =</span> <span class="fu">if_else</span>(</span>
 <span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.null</span>(fits<span class="sc">$</span>primary),</span>
